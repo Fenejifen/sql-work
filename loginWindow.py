@@ -3,6 +3,7 @@
 """
 from PySide2.QtUiTools import QUiLoader
 
+
 class MainLoginWindow:
     """
     登录窗口主界面
@@ -17,15 +18,15 @@ class MainLoginWindow:
 
         # 绑定槽和信号
         # 绑定两个登录按钮
-        self.ui.loginAdminButton.clicked.connect(self.startAdminLogin)
-        self.ui.loginStudentButton.clicked.connect(self.startStudentLogin)
+        self.ui.loginAdminButton.clicked.connect(self.start_admin_login)
+        self.ui.loginStudentButton.clicked.connect(self.start_student_login)
 
     # 按下学生登录按钮后打开学生登录框
-    def startStudentLogin(self):
+    def start_student_login(self):
         self.studentLoginWindow = StudentLoginWindow()
         self.studentLoginWindow.ui.show()
 
-    def startAdminLogin(self):
+    def start_admin_login(self):
         self.adminLoginWindow = AdminLoginWindow()
         self.adminLoginWindow.ui.show()
 
@@ -48,10 +49,9 @@ class StudentLoginWindow:
 
     def login(self):
         # 获取用户名密码，然后比对用户名与密码库中的值，符合则登录
-        userName = self.ui.userNameEdit.text()
-        passWord = self.ui.passWordEdit.text()
+        user_name = self.ui.userNameEdit.text()
+        pass_word = self.ui.passWordEdit.text()
         # TODO:这里想着使用一个数据库存储用户名与密码，然后比对，符合登录
-
 
 
 class AdminLoginWindow:
@@ -73,6 +73,6 @@ class AdminLoginWindow:
 
     def login(self):
         # 获取用户名密码，然后比对用户名与密码库中的值，符合则登录
-        userName = self.ui.userNameEdit.text()
-        passWord = self.ui.passWordEdit.text()
+        user_name = self.ui.userNameEdit.text()
+        pass_word = self.ui.passWordEdit.text()
         # TODO:这里想着使用一个数据库存储用户名与密码，然后比对，符合登录
