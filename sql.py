@@ -29,10 +29,30 @@ class SQL:
 
         # 获取账户密码数据并判断
         cls.cursor.execute(f"select * from {view_name}")
-        account_information = cls.cursor.fetchone()
-        if user_name == account_information[0] and pass_word == account_information[1]:
+        account_information_tuple = cls.cursor.fetchall()
+        account_information_dict = {}
+
+        # 得到的账户信息为元组，为了方便判断转化为字典
+        for account_information in account_information_tuple:
+            account_information_dict.setdefault(account_information[0], account_information[1])
+
+        # TODO:删除调试代码
+        print(account_information_dict)
+        if user_name in account_information_dict and pass_word == account_information_dict[user_name]:
             print("登录成功")
             return True
         else:
             print("登录失败,账号或密码错误")
             return False
+
+    @classmethod
+    def get_students_personal_data(cls, user_name, is_student):
+        """
+        获取学生个人信息，返回一个元组
+        """
+        if is_student:
+            view_name = '学生平台个人展示信息'
+        else:
+            view_name = '管理员平台个人展示信息'
+        cls.cursor.execute(f"select * from {view_name} where 学工号 = {user_name}")
+        return cls.cursor.fetchone()

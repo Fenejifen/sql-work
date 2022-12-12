@@ -1,8 +1,9 @@
 """
 存储所有关于登录窗口相关的类
 """
+from PySide2.QtGui import QImage, QPixmap
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QMessageBox
+from PySide2.QtWidgets import QMessageBox, QGraphicsScene, QGraphicsPixmapItem
 
 from sql import SQL
 
@@ -53,7 +54,7 @@ class StudentLoginWindow:
         pass_word = self.ui.passWordEdit.text()
         if SQL.check_login(user_name, pass_word, True):
             # 登录成功，进入新界面
-            self.studentMainWindow = StudentMainWindow()
+            self.studentMainWindow = StudentMainWindow(user_name)
             self.studentMainWindow.ui.show()
             self.ui.close()
         else:
@@ -98,17 +99,32 @@ class StudentMainWindow:
     学生操作主界面
     """
 
-    def __init__(self):
-        # 从文件中加载UI定义
-        # 从 UI 定义中动态 创建一个相应的窗口对象
-        # 注意：里面的控件对象也成为窗口对象的属性了
-        # 比如 self.ui.button , self.ui.textEdit
+    def __init__(self, user_name):
         self.ui = QUiLoader().load('./ui/studentMain.ui')
+        self.user_name = user_name
+        self.get_personal_data()
 
-        # 绑定槽和信号
-        # 绑定两个登录按钮
-        # self.ui.loginAdminButton.clicked.connect(self.startAdminLogin)
-        # self.ui.loginStudentButton.clicked.connect(self.startStudentLogin)
+    def get_personal_data(self):
+        # 得到个人信息，显示在学生操作界面右上角
+        information = SQL.get_students_personal_data(self.user_name, True)
+        # TODO:删除调试代码
+        print(information)
+        self.ui.SName.setText(information[0])
+        self.ui.SGender.setText(information[1])
+        self.ui.SAge.setText(str(information[2]))
+        self.ui.SClass.setText(information[3])
+        self.ui.UserName.setText(information[4])
+        self.ui.Sdept.setText(information[5])
+        self.ui.SRemain.setText(str(information[6]))
+
+        # 左上角显示图片的一大段代码
+        self.image_qt = QImage('./photo/' + f'{self.user_name}' + '.jpg')
+        pic = QGraphicsPixmapItem()
+        pic.setPixmap(QPixmap.fromImage(self.image_qt))
+        self.scene = QGraphicsScene()
+        self.scene.setSceneRect(0, 0, 0, 0)
+        self.scene.addItem(pic)
+        self.ui.profilePhoto.setScene(self.scene)
 
 
 class AdminMainWindow:
