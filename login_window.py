@@ -1,0 +1,129 @@
+"""
+存储所有关于登录窗口相关的类
+"""
+from PySide2.QtUiTools import QUiLoader
+from PySide2.QtWidgets import QMessageBox
+
+from sql import SQL
+
+
+class MainLoginWindow:
+    """
+    登录窗口主界面
+    """
+
+    def __init__(self):
+        # 从文件中加载UI定义
+        # 从 UI 定义中动态 创建一个相应的窗口对象
+        # 注意：里面的控件对象也成为窗口对象的属性了
+        # 比如 self.ui.button , self.ui.textEdit
+        self.ui = QUiLoader().load('./ui/loginMain.ui')
+
+        # 绑定槽和信号
+        # 绑定两个登录按钮
+        self.ui.loginAdminButton.clicked.connect(self.start_admin_login)
+        self.ui.loginStudentButton.clicked.connect(self.start_student_login)
+
+    # 按下学生登录按钮后打开学生登录框
+    def start_student_login(self):
+        self.studentLoginWindow = StudentLoginWindow()
+        self.studentLoginWindow.ui.show()
+        self.ui.close()
+
+    def start_admin_login(self):
+        self.adminLoginWindow = AdminLoginWindow()
+        self.adminLoginWindow.ui.show()
+        self.ui.close()
+
+
+class StudentLoginWindow:
+    """
+    学生登陆窗口
+    """
+
+    def __init__(self):
+        self.ui = QUiLoader().load('./ui/loginStudent.ui')
+
+        # 绑定学生登录按钮
+        self.ui.loginButton.clicked.connect(self.login)
+
+    def login(self):
+        # 获取用户名密码，然后比对用户名与密码库中的值，符合则登录
+        user_name = self.ui.userNameEdit.text()
+        pass_word = self.ui.passWordEdit.text()
+        if SQL.check_login(user_name, pass_word, True):
+            # 登录成功，进入新界面
+            self.studentMainWindow = StudentMainWindow()
+            self.studentMainWindow.ui.show()
+            self.ui.close()
+        else:
+            # 登录失败，
+            QMessageBox.about(self.ui,
+                              '登录失败',
+                              '用户名或密码错误'
+                              )
+
+
+class AdminLoginWindow:
+    """
+    管理员登陆窗口
+    """
+
+    def __init__(self):
+        # 载入UI界面
+        self.ui = QUiLoader().load('./ui/loginAdmin.ui')
+
+        # 绑定管理员登录按钮
+        self.ui.loginButton.clicked.connect(self.login)
+
+    def login(self):
+        # 获取用户名密码，然后比对用户名与密码库中的值，符合则登录
+        user_name = self.ui.userNameEdit.text()
+        pass_word = self.ui.passWordEdit.text()
+        if SQL.check_login(user_name, pass_word, False):
+            # 登录成功，进入新界面
+            self.adminMainWindow = AdminMainWindow()
+            self.adminMainWindow.ui.show()
+            self.ui.close()
+        else:
+            # 登录失败，
+            QMessageBox.about(self.ui,
+                              '登录失败',
+                              '用户名或密码错误'
+                              )
+
+
+class StudentMainWindow:
+    """
+    学生操作主界面
+    """
+
+    def __init__(self):
+        # 从文件中加载UI定义
+        # 从 UI 定义中动态 创建一个相应的窗口对象
+        # 注意：里面的控件对象也成为窗口对象的属性了
+        # 比如 self.ui.button , self.ui.textEdit
+        self.ui = QUiLoader().load('./ui/studentMain.ui')
+
+        # 绑定槽和信号
+        # 绑定两个登录按钮
+        # self.ui.loginAdminButton.clicked.connect(self.startAdminLogin)
+        # self.ui.loginStudentButton.clicked.connect(self.startStudentLogin)
+
+
+class AdminMainWindow:
+    """
+    管理员操作主界面
+    """
+
+    def __init__(self):
+        # 从文件中加载UI定义
+        # 从 UI 定义中动态 创建一个相应的窗口对象
+        # 注意：里面的控件对象也成为窗口对象的属性了
+        # 比如 self.ui.button , self.ui.textEdit
+        self.ui = QUiLoader().load('./ui/adminMain.ui')
+
+        # 绑定槽和信号
+        # 绑定两个登录按钮
+        # self.ui.loginAdminButton.clicked.connect(self.startAdminLogin)
+        # self.ui.loginStudentButton.clicked.connect(self.startStudentLogin)
