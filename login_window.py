@@ -128,12 +128,12 @@ class StudentMainWindow:
         self.ui.close()
 
     def jump_to_renewAndReturn(self):
-        self.renewAndReturn = renewAndReturn(self.user_name)
+        self.renewAndReturn = RenewAndReturn(self.user_name)
         self.renewAndReturn.ui.show()
         self.ui.close()
 
     def jump_to_queryAndBorrow(self):
-        self.queryAndBorrow = queryAndBorrowWindow(self.user_name)
+        self.queryAndBorrow = QueryAndBorrowWindow(self.user_name)
         self.queryAndBorrow.ui.show()
         self.ui.close()
 
@@ -207,7 +207,7 @@ class AdminMainWindow:
         self.ui.profilePhoto.setScene(self.scene)
 
 
-class queryAndBorrowWindow:
+class QueryAndBorrowWindow:
     """
     查询与借阅界面
     """
@@ -250,7 +250,7 @@ class queryAndBorrowWindow:
         self.ui.close()
 
 
-class renewAndReturn:
+class RenewAndReturn:
     """
     续借与归还界面
     """
