@@ -106,6 +106,7 @@ class AdminLoginWindow:
         self.back.ui.show()
         self.ui.close()
 
+
 class StudentMainWindow:
     """
     学生操作主界面
@@ -176,10 +177,25 @@ class AdminMainWindow:
 
         # 绑定操作按钮
         # TODO:绑定管理员相关操作
-        # self.ui.bookManagement.clicked.connect()
-        # self.ui.studentManagement.clicked.connect()
-        # self.ui.confirmationManagement.clicked.connect()
+        self.ui.bookManagement.clicked.connect(self.jump_to_bookManagement)
+        self.ui.studentManagement.clicked.connect(self.jump_to_studentManagement)
+        self.ui.confirmationManagement.clicked.connect(self.jump_to_confirmationManagement)
         self.ui.backButton.clicked.connect(self.jump_to_back)
+
+    def jump_to_confirmationManagement(self):
+        self.confirmationManagement = ConfirmationManagement(self.user_name)
+        self.confirmationManagement.ui.show()
+        self.ui.close()
+
+    def jump_to_studentManagement(self):
+        self.studentManagement = StudentManagement(self.user_name)
+        self.studentManagement.ui.show()
+        self.ui.close()
+
+    def jump_to_bookManagement(self):
+        self.bookManagement = BookManagement(self.user_name)
+        self.bookManagement.ui.show()
+        self.ui.close()
 
     def jump_to_back(self):
         # 跳转到上一层
@@ -292,5 +308,194 @@ class RenewAndReturn:
     def jump_to_back(self):
         # 跳转到上一层
         self.back = StudentMainWindow(self.user_name)
+        self.back.ui.show()
+        self.ui.close()
+
+
+class BookManagement:
+    """
+    管理员进行图书管理的界面
+    """
+
+    def __init__(self, user_name):
+        self.ui = QUiLoader().load('./ui/bookManagement.ui')
+        self.user_name = user_name;
+        # 获取界面相关信息
+        self.get_book_information()
+
+        # 绑定操作按钮
+        self.ui.addBookButton.clicked.connect(self.add_book)
+        self.ui.deleteBookButton.clicked.connect(self.delete_the_book)
+        self.ui.submitButton.clicked.connect(self.submit_the_book)
+        self.ui.backButton.clicked.connect(self.jump_to_back)
+
+    def submit_the_book(self):
+        current_row = self.ui.informationTable.currentRow()
+        book_information = [
+            self.ui.informationTable.item(current_row, 0).text(),
+            self.ui.informationTable.item(current_row, 1).text(),
+            self.ui.informationTable.item(current_row, 2).text(),
+            self.ui.informationTable.item(current_row, 3).text(),
+            self.ui.informationTable.item(current_row, 4).text(),
+            self.ui.informationTable.item(current_row, 5).text(),
+            self.ui.informationTable.item(current_row, 6).text()]
+        SQL.change_book_information(book_information)
+        # TODO:根据是否修改成功弹出对应选项框
+
+    def add_book(self):
+        row_count = self.ui.informationTable.rowCount()
+        self.ui.informationTable.insertRow(row_count)
+
+    def delete_the_book(self):
+        # 删除当前选中行的书籍，会弹出选项框确定，会根据是否删除成功而返回不同的值
+        current_row = self.ui.informationTable.currentRow()
+        choice = QMessageBox.question(
+            self.ui,
+            '确认删除',
+            '确认要删除本书籍吗?'
+        )
+        if choice == QMessageBox.Yes:
+            isbn = self.ui.informationTable.item(current_row, 0).text()
+            # TODO:根据ISBN进行删除相关操作，并视删除成功与否进行不同输出
+            SQL.delete_the_book(isbn)
+            self.ui.informationTable.setRowCount(0)
+            self.get_book_information()
+
+    def get_book_information(self):
+        book_information = SQL.get_book_information()
+        self.ui.bookInformationLabel.setText(f"当前共有{len(book_information)}本书籍")
+        for i, row_information in enumerate(book_information):
+            self.ui.informationTable.insertRow(i)
+            for j, col_information in enumerate(row_information):
+                item = QTableWidgetItem(str(col_information))
+                self.ui.informationTable.setItem(i, j, item)
+
+    def jump_to_back(self):
+        # 跳转到上一层
+        self.back = AdminMainWindow(self.user_name)
+        self.back.ui.show()
+        self.ui.close()
+
+class StudentManagement:
+    """
+    管理员进行学生管理的界面
+    """
+
+    def __init__(self, user_name):
+        self.ui = QUiLoader().load('./ui/studentManagement.ui')
+        self.user_name = user_name;
+        # 获取界面相关信息
+        self.get_student_information()
+
+        # 绑定操作按钮
+        self.ui.addStudentButton.clicked.connect(self.add_student)
+        self.ui.deleteStudentButton.clicked.connect(self.delete_the_student)
+        self.ui.submitButton.clicked.connect(self.submit_the_student)
+        self.ui.backButton.clicked.connect(self.jump_to_back)
+
+    def submit_the_student(self):
+        current_row = self.ui.informationTable.currentRow()
+        student_information = [
+            self.ui.informationTable.item(current_row, 0).text(),
+            self.ui.informationTable.item(current_row, 1).text(),
+            self.ui.informationTable.item(current_row, 2).text(),
+            self.ui.informationTable.item(current_row, 3).text(),
+            self.ui.informationTable.item(current_row, 4).text(),
+            self.ui.informationTable.item(current_row, 5).text(),
+            self.ui.informationTable.item(current_row, 6).text(),
+            self.ui.informationTable.item(current_row, 7).text(),
+            self.ui.informationTable.item(current_row, 8).text()
+        ]
+        print(student_information)
+        SQL.change_student_information(student_information)
+        # TODO:根据是否修改成功弹出对应选项框
+
+    def add_student(self):
+        row_count = self.ui.informationTable.rowCount()
+        self.ui.informationTable.insertRow(row_count)
+
+    def delete_the_student(self):
+        # 删除当前选中行的书籍，会弹出选项框确定，会根据是否删除成功而返回不同的值
+        current_row = self.ui.informationTable.currentRow()
+        choice = QMessageBox.question(
+            self.ui,
+            '确认删除',
+            '确认要删除该学生信息吗?'
+        )
+        if choice == QMessageBox.Yes:
+            student_user_name = self.ui.informationTable.item(current_row, 0).text()
+            # TODO:根据ISBN进行删除相关操作，并视删除成功与否进行不同输出
+            SQL.delete_the_student(student_user_name)
+            self.ui.informationTable.setRowCount(0)
+            self.get_student_information()
+
+    def get_student_information(self):
+        student_information = SQL.get_student_information()
+        self.ui.studentInformationLabel.setText(f"当前共有{len(student_information)}位学生")
+        for i, row_information in enumerate(student_information):
+            self.ui.informationTable.insertRow(i)
+            for j, col_information in enumerate(row_information):
+                item = QTableWidgetItem(str(col_information))
+                self.ui.informationTable.setItem(i, j, item)
+
+    def jump_to_back(self):
+        # 跳转到上一层
+        self.back = AdminMainWindow(self.user_name)
+        self.back.ui.show()
+        self.ui.close()
+
+class ConfirmationManagement:
+    def __init__(self, user_name):
+        self.ui = QUiLoader().load('./ui/confirmationManagement.ui')
+        self.user_name = user_name;
+        # 获取界面相关信息
+        self.get_confirm_information()
+
+        # 绑定操作按钮
+        self.ui.confirmButton.clicked.connect(self.confirm_the_confirmation)
+        self.ui.rejectButton.clicked.connect(self.reject_the_confirmation)
+        self.ui.backButton.clicked.connect(self.jump_to_back)
+
+    def confirm_the_confirmation(self):
+        # 接受当前选中行的请求，会弹出选项框确定，会根据是否删除成功而返回不同的值
+        current_row = self.ui.informationTable.currentRow()
+        choice = QMessageBox.question(
+            self.ui,
+            '确认接受',
+            '确认要接受该请求吗?'
+        )
+        if choice == QMessageBox.Yes:
+            confirmation_name = self.ui.informationTable.item(current_row, 0).text()
+            # TODO:根据操作编号进行接受相关操作，并视接收成功与否进行不同输出
+            SQL.confirm_the_confirmation(confirmation_name)
+            self.ui.informationTable.setRowCount(0)
+            self.get_confirm_information()
+    def reject_the_confirmation(self):
+        #拒绝当前选中行的请求，会弹出选项框确定，会根据是否删除成功而返回不同的值
+        current_row = self.ui.informationTable.currentRow()
+        choice = QMessageBox.question(
+            self.ui,
+            '确认拒绝',
+            '确认要拒绝该请求吗?'
+        )
+        if choice == QMessageBox.Yes:
+            confirmation_name = self.ui.informationTable.item(current_row, 0).text()
+            # TODO:根据操作编号进行拒绝等相关操作，并视删除成功与否进行不同输出
+            SQL.reject_the_confirmation(confirmation_name)
+            self.ui.informationTable.setRowCount(0)
+            self.get_confirm_information()
+
+    def get_confirm_information(self):
+        confirm_information = SQL.get_confirm_information()
+        self.ui.confirmationInformationLabel.setText(f"当前共有{len(confirm_information)}个待处理事项")
+        for i, row_information in enumerate(confirm_information):
+            self.ui.informationTable.insertRow(i)
+            for j, col_information in enumerate(row_information):
+                item = QTableWidgetItem(str(col_information))
+                self.ui.informationTable.setItem(i, j, item)
+
+    def jump_to_back(self):
+        # 跳转到上一层
+        self.back = AdminMainWindow(self.user_name)
         self.back.ui.show()
         self.ui.close()

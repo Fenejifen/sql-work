@@ -68,3 +68,48 @@ class SQL:
         cls.cursor.execute(
             f"select ISBN,书名,作者,借阅时间,应还时间,续借次数 from 学生借阅书籍信息 where 学号 = '{user_name}'")
         return cls.cursor.fetchall()
+
+    @classmethod
+    def get_book_information(cls):
+        cls.cursor.execute("select * from 书籍")
+        return cls.cursor.fetchall()
+
+    @classmethod
+    def change_book_information(cls, book_information):
+        # TODO:根据book_information进行修改书籍相关信息，并返回True或False
+        pass
+
+    @classmethod
+    def delete_the_book(cls, isbn):
+        # TODO:删除isbn书籍，并且返回True或False
+        pass
+
+    @classmethod
+    def get_student_information(cls):
+        cls.cursor.execute("select * from 学生")
+        return cls.cursor.fetchall()
+
+    @classmethod
+    def delete_the_student(cls, student_user_name):
+        # TODO:删除isbn书籍，并且返回True或False
+        pass
+
+    @classmethod
+    def change_student_information(cls, student_information):
+        # TODO:根据book_information进行修改书籍相关信息，并返回True或False
+        pass
+
+    @classmethod
+    def get_confirm_information(cls):
+        cls.cursor.execute("select * from 待确认事项")
+        return cls.cursor.fetchall()
+
+    @classmethod
+    def confirm_the_confirmation(cls, confirmation_name):
+        # TODO:根据confirmation_name进行相关确认操作，并返回True或False
+        pass
+
+    @classmethod
+    def reject_the_confirmation(cls, confirmation_name):
+        # TODO:根据confirmation_name进行相关拒绝操作，并返回True或False
+        pass

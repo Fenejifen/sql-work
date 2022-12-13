@@ -247,7 +247,7 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="confirmationItems">
+        <widget class="QPushButton" name="confirmationManagement">
          <property name="text">
           <string>待确认事项管理</string>
          </property>
