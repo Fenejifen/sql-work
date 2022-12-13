@@ -13,43 +13,39 @@
   <property name="windowTitle">
    <string>学生操作界面</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_5">
+  <layout class="QHBoxLayout" name="horizontalLayout_3">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QGraphicsView" name="profilePhoto"/>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QGraphicsView" name="profilePhoto"/>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
        </item>
        <item>
         <widget class="Line" name="line">
@@ -114,32 +110,32 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-             <widget class="QLabel" name="Name">
-                 <property name="text">
-                     <string>张三</string>
-                 </property>
-             </widget>
+          <widget class="QLabel" name="Name">
+           <property name="text">
+            <string>张三</string>
+           </property>
+          </widget>
          </item>
          <item>
-             <widget class="QLabel" name="Gender">
-                 <property name="text">
-                     <string>男</string>
-                 </property>
-             </widget>
+          <widget class="QLabel" name="Gender">
+           <property name="text">
+            <string>男</string>
+           </property>
+          </widget>
          </item>
          <item>
-             <widget class="QLabel" name="Age">
-                 <property name="text">
-                     <string>18</string>
-                 </property>
-             </widget>
+          <widget class="QLabel" name="Age">
+           <property name="text">
+            <string>18</string>
+           </property>
+          </widget>
          </item>
          <item>
-             <widget class="QLabel" name="Class">
-                 <property name="text">
-                     <string>10012007</string>
-                 </property>
-             </widget>
+          <widget class="QLabel" name="Class">
+           <property name="text">
+            <string>10012007</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="UserName">
@@ -149,18 +145,18 @@
           </widget>
          </item>
          <item>
-             <widget class="QLabel" name="Dept">
-                 <property name="text">
-                     <string>计算机科学与技术</string>
-                 </property>
-             </widget>
+          <widget class="QLabel" name="Dept">
+           <property name="text">
+            <string>计算机科学与技术</string>
+           </property>
+          </widget>
          </item>
          <item>
-             <widget class="QLabel" name="Remain">
-                 <property name="text">
-                     <string>3</string>
-                 </property>
-             </widget>
+          <widget class="QLabel" name="Remain">
+           <property name="text">
+            <string>3</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
@@ -289,6 +285,30 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <spacer name="horizontalSpacer_8">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="backButton">
+         <property name="text">
+          <string>退出登录</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

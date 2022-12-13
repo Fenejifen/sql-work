@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>学生登录 - 数据库管理系统</string>
+   <string>管理员登录 - 数据库管理系统</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -100,17 +100,41 @@
      </item>
      <item>
       <spacer name="verticalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
+          <property name="orientation">
+              <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+              <size>
+                  <width>20</width>
+                  <height>40</height>
+              </size>
+          </property>
       </spacer>
      </item>
+        <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                    <spacer name="horizontalSpacer_3">
+                        <property name="orientation">
+                            <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                            <size>
+                                <width>40</width>
+                                <height>20</height>
+                            </size>
+                        </property>
+                    </spacer>
+                </item>
+                <item>
+                    <widget class="QPushButton" name="backButton">
+                        <property name="text">
+                            <string>返回</string>
+                        </property>
+                    </widget>
+                </item>
+            </layout>
+        </item>
     </layout>
    </item>
   </layout>

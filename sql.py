@@ -62,3 +62,9 @@ class SQL:
         # TODO:加入借阅信息中关于最近应还书籍日期的信息
         cls.cursor.execute(f"select * from 学生查询书籍信息 where 书名 = '{book_name}' ")
         return cls.cursor.fetchall()
+
+    @classmethod
+    def get_borrow_information(cls, user_name):
+        cls.cursor.execute(
+            f"select ISBN,书名,作者,借阅时间,应还时间,续借次数 from 学生借阅书籍信息 where 学号 = '{user_name}'")
+        return cls.cursor.fetchall()
