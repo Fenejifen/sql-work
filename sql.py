@@ -56,3 +56,9 @@ class SQL:
             view_name = '管理员平台个人展示信息'
         cls.cursor.execute(f"select * from {view_name} where 学工号 = {user_name}")
         return cls.cursor.fetchone()
+
+    @classmethod
+    def search_book_by_name(cls, book_name):
+        # TODO:加入借阅信息中关于最近应还书籍日期的信息
+        cls.cursor.execute(f"select * from 学生查询书籍信息 where 书名 = '{book_name}' ")
+        return cls.cursor.fetchall()

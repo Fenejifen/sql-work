@@ -17,3 +17,7 @@ pymysql
 pyside2
 python.\main.py
 ```
+
+## 一些细节
+
+photo目录下存放每个人的图标，命名为学工号.jpg即可显示

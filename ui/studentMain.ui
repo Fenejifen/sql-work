@@ -91,7 +91,7 @@
          <item>
           <widget class="QLabel" name="label_4">
            <property name="text">
-            <string>学工号：</string>
+            <string>学号：</string>
            </property>
           </widget>
          </item>
@@ -114,32 +114,32 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QLabel" name="SName">
-           <property name="text">
-            <string>张三</string>
-           </property>
-          </widget>
+             <widget class="QLabel" name="Name">
+                 <property name="text">
+                     <string>张三</string>
+                 </property>
+             </widget>
          </item>
          <item>
-          <widget class="QLabel" name="SGender">
-           <property name="text">
-            <string>男</string>
-           </property>
-          </widget>
+             <widget class="QLabel" name="Gender">
+                 <property name="text">
+                     <string>男</string>
+                 </property>
+             </widget>
          </item>
          <item>
-          <widget class="QLabel" name="SAge">
-           <property name="text">
-            <string>18</string>
-           </property>
-          </widget>
+             <widget class="QLabel" name="Age">
+                 <property name="text">
+                     <string>18</string>
+                 </property>
+             </widget>
          </item>
          <item>
-          <widget class="QLabel" name="SClass">
-           <property name="text">
-            <string>10012007</string>
-           </property>
-          </widget>
+             <widget class="QLabel" name="Class">
+                 <property name="text">
+                     <string>10012007</string>
+                 </property>
+             </widget>
          </item>
          <item>
           <widget class="QLabel" name="UserName">
@@ -149,18 +149,18 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="Sdept">
-           <property name="text">
-            <string>计算机科学与技术</string>
-           </property>
-          </widget>
+             <widget class="QLabel" name="Dept">
+                 <property name="text">
+                     <string>计算机科学与技术</string>
+                 </property>
+             </widget>
          </item>
          <item>
-          <widget class="QLabel" name="SRemain">
-           <property name="text">
-            <string>3</string>
-           </property>
-          </widget>
+             <widget class="QLabel" name="Remain">
+                 <property name="text">
+                     <string>3</string>
+                 </property>
+             </widget>
          </item>
         </layout>
        </item>
