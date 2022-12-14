@@ -44,6 +44,11 @@
              </column>
              <column>
               <property name="text">
+               <string>书名</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
                <string>申请日期</string>
               </property>
              </column>

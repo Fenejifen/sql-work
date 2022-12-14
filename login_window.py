@@ -254,6 +254,7 @@ class QueryAndBorrowWindow:
 
     def search_book_by_name(self):
         # 按下搜索按钮后获得信息并输出至信息框
+        # TODO: 加入根据作者等方法进行模糊搜索
         book_name = self.ui.searchEdit.text()
         book_information = SQL.search_book_by_name(book_name)
         self.ui.informationTable.setRowCount(0)
@@ -358,10 +359,21 @@ class BookManagement:
             self.ui.informationTable.item(current_row, 4).text(),
             self.ui.informationTable.item(current_row, 5).text(),
             self.ui.informationTable.item(current_row, 6).text()]
-        SQL.change_book_information(book_information)
-        # TODO:根据是否修改成功弹出对应选项框
+        exit_code = SQL.change_book_information(current_row,book_information)
+        if exit_code == 0:
+            QMessageBox.information(
+                self.ui,
+                '操作成功',
+                '成功修改')
+            self.ui.informationTable.setRowCount(0)
+            self.get_book_information()
+        if exit_code == 1:
+            QMessageBox.critical(self.ui, '操作失败', '出现异常错误')
+
 
     def add_book(self):
+        self.ui.informationTable.setRowCount(0)
+        self.get_book_information()
         row_count = self.ui.informationTable.rowCount()
         self.ui.informationTable.insertRow(row_count)
 
@@ -374,11 +386,21 @@ class BookManagement:
             '确认要删除本书籍吗?'
         )
         if choice == QMessageBox.Yes:
-            isbn = self.ui.informationTable.item(current_row, 0).text()
-            # TODO:根据ISBN进行删除相关操作，并视删除成功与否进行不同输出
-            SQL.delete_the_book(isbn)
+            # TODO:根据当前行进行删除相关操作，并视删除成功与否进行不同输出
+            exit_code = SQL.delete_the_book(current_row)
             self.ui.informationTable.setRowCount(0)
             self.get_book_information()
+            if exit_code == 0:
+                QMessageBox.information(
+                    self.ui,
+                    '操作成功',
+                    '成功修改')
+            if exit_code == 1:
+                QMessageBox.critical(self.ui, '操作失败', '出现异常错误')
+            if exit_code == 2:
+                QMessageBox.critical(self.ui, '操作失败', '本书仍有请求未处理')
+            if exit_code == 3:
+                QMessageBox.critical(self.ui, '操作失败', '本书未被归还')
 
     def get_book_information(self):
         book_information = SQL.get_book_information()

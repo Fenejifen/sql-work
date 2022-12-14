@@ -74,14 +74,65 @@ class SQL:
         return cls.cursor.fetchall()
 
     @classmethod
-    def change_book_information(cls, book_information):
-        # TODO:根据book_information进行修改书籍相关信息，并返回True或False
-        pass
+    def change_book_information(cls, current_row, book_information):
+        # 改变图书信息，有增加与修改两种情况
+        old_book_information = SQL.get_book_information()
+        try:
+            if current_row >= len(old_book_information):
+                # 增加情况
+                print(book_information)
+                cls.cursor.execute(f"insert into 书籍 values("
+                                   f"{book_information[0]},"
+                                   f"'{book_information[1]}',"
+                                   f"'{book_information[2]}',"
+                                   f"'{book_information[3]}',"
+                                   f"'{book_information[4]}',"
+                                   f"{book_information[5]},"
+                                   f"{book_information[6]})")
+            else:
+                # 修改情况
+                old_isbn = old_book_information[current_row][0]
+                cls.cursor.execute(f"update 书籍 set "
+                                   f"ISBN={book_information[0]},"
+                                   f"书名='{book_information[1]}',"
+                                   f"作者='{book_information[2]}',"
+                                   f"出版社='{book_information[3]}',"
+                                   f"类型='{book_information[4]}',"
+                                   f"馆藏总数={book_information[5]},"
+                                   f"可借书籍数={book_information[6]} "
+                                   f"where ISBN = {old_isbn}")
+        except Exception as result:
+            print(result)
+            cls.db.rollback()
+            return 1
+        else:
+            cls.db.commit()
+            return 0
 
     @classmethod
-    def delete_the_book(cls, isbn):
-        # TODO:删除isbn书籍，并且返回True或False
-        pass
+    def delete_the_book(cls, current_row):
+        # 删除当前行的书籍信息,成功则返回0，未知错误返回1,有请求未确认返回2，有书还没还返回3
+        isbn = SQL.get_book_information()[current_row][0]
+        # 有请求情况
+        cls.cursor.execute(f"select * from 待确认事项 where ISBN={isbn}")
+        if cls.cursor.fetchone() is not None:
+            return 2
+        # 未归还情况
+        cls.cursor.execute(f"select * from 学生借阅未归还书籍信息 where ISBN={isbn}")
+        if cls.cursor.fetchone() is not None:
+            return 3
+        # 删除
+        try:
+            cls.cursor.execute(f"delete from 书籍 where ISBN={isbn}")
+        except Exception as result:
+            # 出现异常情况
+            print(result)
+            cls.db.rollback()
+            return 1
+        else:
+            # 正常删除情况
+            cls.db.commit()
+            return 0
 
     @classmethod
     def get_student_information(cls):
@@ -128,7 +179,8 @@ class SQL:
                 f"update 操作申请 set 工号 = {user_name}, 是否同意='1', 借阅编号={borrow_id} where 操作编号={confirmation_name}")
         elif operation_type == '续借':
             # 续借操作，更新借阅信息表的续借次数项与操作申请表
-            cls.cursor.execute(f"select 借阅编号 from 学生借阅未归还书籍信息 where ISBN={isbn} and 学号={student_user_name}")
+            cls.cursor.execute(
+                f"select 借阅编号 from 学生借阅未归还书籍信息 where ISBN={isbn} and 学号={student_user_name}")
             borrow_id = cls.cursor.fetchone()[0]
             # 更新借阅信息表的续借次数项目
             cls.cursor.execute(f"update 学生借阅未归还书籍信息 set 续借次数=续借次数+1 where 借阅编号={borrow_id}")
@@ -137,7 +189,8 @@ class SQL:
                 f"update 操作申请 set 工号 = {user_name}, 是否同意='1', 借阅编号={borrow_id} where 操作编号={confirmation_name}")
         elif operation_type == '归还':
             # 归还操作，更新借阅信息表的归还时间选项，更新操作申请表，学生可借阅书籍数+1，书籍数+1
-            cls.cursor.execute(f"select 借阅编号 from 学生借阅未归还书籍信息 where ISBN={isbn} and 学号={student_user_name}")
+            cls.cursor.execute(
+                f"select 借阅编号 from 学生借阅未归还书籍信息 where ISBN={isbn} and 学号={student_user_name}")
             borrow_id = cls.cursor.fetchone()[0]
             # 更新借阅信息表的归还时间项目
             cls.cursor.execute(f"update 借阅信息 set 归还时间='{date_time}' where 借阅编号={borrow_id}")
@@ -145,20 +198,23 @@ class SQL:
             cls.cursor.execute(
                 f"update 操作申请 set 工号 = {user_name}, 是否同意='1', 借阅编号={borrow_id} where 操作编号={confirmation_name}")
             # 更新可借阅书籍数和书籍数
-            cls.cursor.execute(f"update 学生 set 剩余可借阅书籍数 = 剩余可借阅书籍数 + 1 where 学工号 = {student_user_name}")
+            cls.cursor.execute(
+                f"update 学生 set 剩余可借阅书籍数 = 剩余可借阅书籍数 + 1 where 学工号 = {student_user_name}")
             cls.cursor.execute(f"update 书籍 set 可借书籍数 = 可借书籍数 + 1 where ISBN = {isbn}")
         cls.db.commit()
 
     @classmethod
     def reject_the_confirmation(cls, confirmation_name, user_name, reject_reason):
         # 所有拒绝操作都需要在操作申请表中填写工号、是否同意与备注
-        cls.cursor.execute(f"update 操作申请 set 工号={user_name},是否同意=0,备注='{reject_reason}' where 操作编号 = {confirmation_name}")
+        cls.cursor.execute(
+            f"update 操作申请 set 工号={user_name},是否同意=0,备注='{reject_reason}' where 操作编号 = {confirmation_name}")
         # 之后根据拒绝操作类型的不同来进行不同的操作
         cls.cursor.execute(f"select 操作类型,学号,ISBN from 操作申请 where 操作编号 = {confirmation_name}")
         information = cls.cursor.fetchone()
         if information[0] == '借阅':
             # 拒绝借阅操作还需要将学生的可借阅书籍+1，图书的可借阅数+1
-            cls.cursor.execute(f'update 学生 set 剩余可借阅书籍数 = 剩余可借阅书籍数 + 1 where 学工号 = {information[1]}')
+            cls.cursor.execute(
+                f'update 学生 set 剩余可借阅书籍数 = 剩余可借阅书籍数 + 1 where 学工号 = {information[1]}')
             cls.cursor.execute(f'update 书籍 set 可借书籍数 = 可借书籍数 + 1 where ISBN = {information[2]}')
         elif information[0] == '续借':
             # 拒绝续借操作只需要完善操作申请表即可
@@ -180,7 +236,8 @@ class SQL:
         if cls.cursor.fetchone()[0] == 0:
             return 2
         # 判断是否该学生已经借阅过本书
-        cls.cursor.execute(f"select 借阅编号 from 借阅信息 where 学号 = {user_name} and ISBN={isbn} and 归还时间 is NULL")
+        cls.cursor.execute(
+            f"select 借阅编号 from 借阅信息 where 学号 = {user_name} and ISBN={isbn} and 归还时间 is NULL")
         if cls.cursor.fetchone() is not None:
             return 3
         # 判断学生是否重复申请
@@ -196,7 +253,7 @@ class SQL:
         return 0
 
     @classmethod
-    def renew_the_book(cls, isbn,user_name):
+    def renew_the_book(cls, isbn, user_name):
         # 让学号为user_name的学生续借当前ISBN的书籍，返回码0表示续借申请成功，1表示已经续借过了,2表示已经申请过了
         # 判断是否已经续借过
         cls.cursor.execute(f"select 续借次数 from 借阅信息 where 学号={user_name} and ISBN={isbn} and 归还时间 is null")
