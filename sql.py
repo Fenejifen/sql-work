@@ -126,7 +126,7 @@ class SQL:
             # 操作申请表，将本次操作的工号与是否同意，对应借阅信息表的编号进行填写
             cls.cursor.execute(
                 f"update 操作申请 set 工号 = {user_name}, 是否同意='1', 借阅编号={borrow_id} where 操作编号={confirmation_name}")
-        elif information[0] == '续借':
+        elif operation_type == '续借':
             # 续借操作，更新借阅信息表的续借次数项与操作申请表
             cls.cursor.execute(f"select 借阅编号 from 学生借阅未归还书籍信息 where ISBN={isbn} and 学号={student_user_name}")
             borrow_id = cls.cursor.fetchone()[0]
@@ -135,14 +135,22 @@ class SQL:
             # 操作申请表，将本次操作的工号与是否同意，对应借阅信息表的编号进行填写
             cls.cursor.execute(
                 f"update 操作申请 set 工号 = {user_name}, 是否同意='1', 借阅编号={borrow_id} where 操作编号={confirmation_name}")
-        elif information[0] == '归还':
-            # TODO:归还操作
-            pass
+        elif operation_type == '归还':
+            # 归还操作，更新借阅信息表的归还时间选项，更新操作申请表，学生可借阅书籍数+1，书籍数+1
+            cls.cursor.execute(f"select 借阅编号 from 学生借阅未归还书籍信息 where ISBN={isbn} and 学号={student_user_name}")
+            borrow_id = cls.cursor.fetchone()[0]
+            # 更新借阅信息表的归还时间项目
+            cls.cursor.execute(f"update 借阅信息 set 归还时间='{date_time}' where 借阅编号={borrow_id}")
+            # 操作申请表，将本次操作的工号与是否同意，对应借阅信息表的编号进行填写
+            cls.cursor.execute(
+                f"update 操作申请 set 工号 = {user_name}, 是否同意='1', 借阅编号={borrow_id} where 操作编号={confirmation_name}")
+            # 更新可借阅书籍数和书籍数
+            cls.cursor.execute(f"update 学生 set 剩余可借阅书籍数 = 剩余可借阅书籍数 + 1 where 学工号 = {student_user_name}")
+            cls.cursor.execute(f"update 书籍 set 可借书籍数 = 可借书籍数 + 1 where ISBN = {isbn}")
         cls.db.commit()
 
     @classmethod
     def reject_the_confirmation(cls, confirmation_name, user_name, reject_reason):
-        # TODO:根据confirmation_name进行相关拒绝操作,还剩续借与归还
         # 所有拒绝操作都需要在操作申请表中填写工号、是否同意与备注
         cls.cursor.execute(f"update 操作申请 set 工号={user_name},是否同意=0,备注='{reject_reason}' where 操作编号 = {confirmation_name}")
         # 之后根据拒绝操作类型的不同来进行不同的操作
@@ -156,6 +164,7 @@ class SQL:
             # 拒绝续借操作只需要完善操作申请表即可
             pass
         elif information[0] == '归还':
+            # 拒绝归还操作只需要完善操作申请表即可
             pass
         cls.db.commit()
 
@@ -188,18 +197,42 @@ class SQL:
 
     @classmethod
     def renew_the_book(cls, isbn,user_name):
-        # 让学号为user_name的学生预订借阅当前ISBN的书籍，返回码0表示续借申请成功，1表示已经续借过了,2表示已经申请过了
+        # 让学号为user_name的学生续借当前ISBN的书籍，返回码0表示续借申请成功，1表示已经续借过了,2表示已经申请过了
         # 判断是否已经续借过
         cls.cursor.execute(f"select 续借次数 from 借阅信息 where 学号={user_name} and ISBN={isbn} and 归还时间 is null")
         if cls.cursor.fetchone()[0] != 0:
             return 1
         # 判断是否重复申请
-        cls.cursor.execute(f"select 操作编号 from 操作申请 where 是否同意 is NULL and 学号={user_name} and ISBN={isbn}")
-        if cls.cursor.fetchone() is not None:
-            return 2
+        cls.cursor.execute(f"select 操作类型 from 操作申请 where 是否同意 is NULL and 学号={user_name} and ISBN={isbn}")
+        information = cls.cursor.fetchone()
+        if information is not None:
+            operation_type = information[0]
+            if operation_type == '续借':
+                return 2
+            elif operation_type == '归还':
+                return 3
         # 进行操作申请操作，只需要在操作申请表中插入信息即可
         cls.cursor.execute(f"insert into 操作申请 (学号,ISBN,申请日期,操作类型) values ({user_name}, {isbn}, "
                            f"'{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}', '续借')")
+        cls.db.commit()
+
+        return 0
+
+    @classmethod
+    def return_the_book(cls, isbn, user_name):
+        # 让学号为user_name的学生归还当前ISBN的书籍，返回码0表示归还申请成功，1表示已经申请归还，2表示已申请续借
+        # 判断是否重复申请
+        cls.cursor.execute(f"select 操作类型 from 操作申请 where 是否同意 is NULL and 学号={user_name} and ISBN={isbn}")
+        information = cls.cursor.fetchone()
+        if information is not None:
+            operation_type = information[0]
+            if operation_type == '归还':
+                return 1
+            elif operation_type == '续借':
+                return 2
+        # 进行操作申请操作，只需要在操作申请表中插入信息即可
+        cls.cursor.execute(f"insert into 操作申请 (学号,ISBN,申请日期,操作类型) values ({user_name}, {isbn}, "
+                           f"'{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}', '归还')")
         cls.db.commit()
 
         return 0

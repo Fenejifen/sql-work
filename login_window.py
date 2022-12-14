@@ -302,7 +302,6 @@ class RenewAndReturn:
         # 按下续借框后续借当前书籍，根据是否成功来决定下一步操作
         current_row = self.ui.informationTable.currentRow()
         isbn = self.ui.informationTable.item(current_row, 0).text()
-        # TODO: 根据ISBN与user_name进行续借相关操作
         exit_code = SQL.renew_the_book(isbn, self.user_name)
         if exit_code == 0:
             QMessageBox.about(self.ui, '操作成功', '书籍已续借请寻找管理员进行确定操作')
@@ -310,13 +309,20 @@ class RenewAndReturn:
             QMessageBox.critical(self.ui, '操作失败', '您已经续借过这本书了')
         elif exit_code == 2:
             QMessageBox.critical(self.ui, '操作失败', '请勿重复申请')
+        elif exit_code == 3:
+            QMessageBox.critical(self.ui, '操作失败', '已经有归还申请了')
         print(isbn)
 
     def return_the_book(self):
         current_row = self.ui.informationTable.currentRow()
         isbn = self.ui.informationTable.item(current_row, 0).text()
-        # TODO: 根据ISBN与user_name进行归还相关操作
-        print(isbn)
+        exit_code = SQL.return_the_book(isbn, self.user_name)
+        if exit_code == 0:
+            QMessageBox.about(self.ui, '操作成功', '书籍已申请归还请寻找管理员进行确定操作')
+        elif exit_code == 1:
+            QMessageBox.critical(self.ui, '操作失败', '请勿重复申请')
+        elif exit_code == 2:
+            QMessageBox.critical(self.ui, '操作失败', '已经有续借申请了')
 
     def jump_to_back(self):
         # 跳转到上一层
@@ -479,7 +485,6 @@ class ConfirmationManagement:
         )
         if choice == QMessageBox.Yes:
             confirmation_name = self.ui.informationTable.item(current_row, 0).text()
-            # TODO:根据操作编号进行接受相关操作，并视接收成功与否进行不同输出
             SQL.confirm_the_confirmation(confirmation_name, self.user_name)
             self.ui.informationTable.setRowCount(0)
             self.get_confirm_information()
@@ -504,7 +509,6 @@ class ConfirmationManagement:
             "")
         if okPressed:
             confirmation_name = self.ui.informationTable.item(current_row, 0).text()
-            # TODO:根据操作编号进行拒绝等相关操作,并将拒绝原因写入备注项
             SQL.reject_the_confirmation(confirmation_name, self.user_name, reject_reason)
             self.ui.informationTable.setRowCount(0)
             self.get_confirm_information()
