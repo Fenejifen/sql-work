@@ -303,7 +303,13 @@ class RenewAndReturn:
         current_row = self.ui.informationTable.currentRow()
         isbn = self.ui.informationTable.item(current_row, 0).text()
         # TODO: 根据ISBN与user_name进行续借相关操作
-        SQL.renew_the_book(isbn, self.user_name)
+        exit_code = SQL.renew_the_book(isbn, self.user_name)
+        if exit_code == 0:
+            QMessageBox.about(self.ui, '操作成功', '书籍已续借请寻找管理员进行确定操作')
+        elif exit_code == 1:
+            QMessageBox.critical(self.ui, '操作失败', '您已经续借过这本书了')
+        elif exit_code == 2:
+            QMessageBox.critical(self.ui, '操作失败', '请勿重复申请')
         print(isbn)
 
     def return_the_book(self):
