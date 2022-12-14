@@ -247,6 +247,10 @@ class QueryAndBorrowWindow:
             QMessageBox.critical(self.ui, '操作失败', '书籍被借阅光了')
         elif exit_code == 2:
             QMessageBox.critical(self.ui, '操作失败', '您当前借阅书籍数量已达上限')
+        elif exit_code == 3:
+            QMessageBox.critical(self.ui, '操作失败', '您已经借阅了当前书籍')
+        elif exit_code == 4:
+            QMessageBox.critical(self.ui, '操作失败', '您已申请了借阅当前书籍')
 
     def search_book_by_name(self):
         # 按下搜索按钮后获得信息并输出至信息框
@@ -299,6 +303,7 @@ class RenewAndReturn:
         current_row = self.ui.informationTable.currentRow()
         isbn = self.ui.informationTable.item(current_row, 0).text()
         # TODO: 根据ISBN与user_name进行续借相关操作
+        SQL.renew_the_book(isbn, self.user_name)
         print(isbn)
 
     def return_the_book(self):

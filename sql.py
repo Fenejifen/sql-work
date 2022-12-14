@@ -146,7 +146,7 @@ class SQL:
 
     @classmethod
     def borrow_the_book(cls, isbn, user_name):
-        # 让学号为user_name的学生预订借阅当前ISBN的书籍，返回码0表示借阅成功，1表示没有图书，2表示超出借阅上限
+        # 让学号为user_name的学生预订借阅当前ISBN的书籍，返回码0表示借阅成功，1表示没有图书，2表示超出借阅上限,3表示正在借阅,4表示重复申请
         # 判断是否有剩余图书
         cls.cursor.execute(f"select 可借书籍数 from 书籍 where ISBN = {isbn} ")
         if cls.cursor.fetchone()[0] == 0:
@@ -155,6 +155,14 @@ class SQL:
         cls.cursor.execute(f"select 剩余可借阅书籍数 from 学生 where 学工号 = {user_name}")
         if cls.cursor.fetchone()[0] == 0:
             return 2
+        # 判断是否该学生已经借阅过本书
+        cls.cursor.execute(f"select 借阅编号 from 借阅信息 where 学号 = {user_name} and ISBN={isbn} and 归还时间 is NULL")
+        if cls.cursor.fetchone() is not None:
+            return 3
+        # 判断学生是否重复申请
+        cls.cursor.execute(f"select 操作编号 from 操作申请 where 是否同意 is NULL and 学号={user_name} and ISBN={isbn}")
+        if cls.cursor.fetchone() is not None:
+            return 4
         # 进行操作申请操作，包括书籍-1，可借阅书籍-1，操作申请表中增加数据内容
         cls.cursor.execute(f"update 书籍 set 可借书籍数 = 可借书籍数 - 1 where ISBN = {isbn}")
         cls.cursor.execute(f"update 学生 set 剩余可借阅书籍数 = 剩余可借阅书籍数 - 1 where 学工号 = {user_name}")
@@ -162,3 +170,7 @@ class SQL:
                            f"{isbn},'{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}', '借阅')")
         cls.db.commit()
         return 0
+
+    @classmethod
+    def renew_the_book(cls, isbn,user_name):
+        pass
