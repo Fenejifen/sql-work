@@ -140,14 +140,69 @@ class SQL:
         return cls.cursor.fetchall()
 
     @classmethod
-    def delete_the_student(cls, student_user_name):
-        # TODO:删除isbn书籍，并且返回True或False
-        pass
+    def delete_the_student(cls, current_row):
+        # 删除当前行的学生信息,成功则返回0，未知错误返回1,有请求未确认返回2，有书还没还返回3
+        user_name = SQL.get_student_information()[current_row][0]
+        # 有请求情况
+        cls.cursor.execute(f"select * from 待确认事项 where 学号={user_name}")
+        if cls.cursor.fetchone() is not None:
+            return 2
+        # 未归还情况
+        cls.cursor.execute(f"select * from 学生借阅未归还书籍信息 where 学号={user_name}")
+        if cls.cursor.fetchone() is not None:
+            return 3
+        # 删除
+        try:
+            cls.cursor.execute(f"delete from 学生 where 学工号={user_name}")
+        except Exception as result:
+            # 出现异常情况
+            print(result)
+            cls.db.rollback()
+            return 1
+        else:
+            # 正常删除情况
+            cls.db.commit()
+            return 0
 
     @classmethod
-    def change_student_information(cls, student_information):
-        # TODO:根据book_information进行修改书籍相关信息，并返回True或False
-        pass
+    def change_student_information(cls, current_row, student_information):
+        # 修改学生信息，有增加与更新两种情况，正常返回0，出现异常返回1
+        old_student_information = SQL.get_student_information()
+        try:
+            if current_row >= len(old_student_information):
+                # 增加情况
+                print(student_information)
+                cls.cursor.execute(f"insert into 学生 values("
+                                   f"{student_information[0]},"
+                                   f"'{student_information[1]}',"
+                                   f"'{student_information[2]}',"
+                                   f"'{student_information[3]}',"
+                                   f"'{student_information[4]}',"
+                                   f"'{student_information[5]}',"
+                                   f"{student_information[6]},"
+                                   f"{student_information[7]},"
+                                   f"{student_information[8]})")
+            else:
+                # 修改情况
+                old_user_name = old_student_information[current_row][0]
+                cls.cursor.execute(f"update 学生 set "
+                                   f"学工号={student_information[0]},"
+                                   f"姓名='{student_information[1]}',"
+                                   f"年龄='{student_information[2]}',"
+                                   f"班级='{student_information[3]}',"
+                                   f"专业='{student_information[4]}',"
+                                   f"性别='{student_information[5]}',"
+                                   f"联系方式={student_information[6]},"
+                                   f"账户密码={student_information[7]},"
+                                   f"剩余可借阅书籍数={student_information[8]} "
+                                   f"where 学工号 = {old_user_name}")
+        except Exception as result:
+            print(result)
+            cls.db.rollback()
+            return 1
+        else:
+            cls.db.commit()
+            return 0
 
     @classmethod
     def get_confirm_information(cls):

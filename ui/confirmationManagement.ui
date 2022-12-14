@@ -39,6 +39,11 @@
              </column>
              <column>
               <property name="text">
+               <string>学生姓名</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
                <string>ISBN</string>
               </property>
              </column>
