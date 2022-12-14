@@ -3,7 +3,8 @@
 """
 from PySide2.QtGui import QImage, QPixmap, QIcon
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QMessageBox, QGraphicsScene, QGraphicsPixmapItem, QTableWidgetItem
+from PySide2.QtWidgets import QMessageBox, QGraphicsScene, QGraphicsPixmapItem, QTableWidgetItem, QInputDialog, \
+    QLineEdit
 
 from sql import SQL
 
@@ -468,23 +469,43 @@ class ConfirmationManagement:
         if choice == QMessageBox.Yes:
             confirmation_name = self.ui.informationTable.item(current_row, 0).text()
             # TODO:根据操作编号进行接受相关操作，并视接收成功与否进行不同输出
-            SQL.confirm_the_confirmation(confirmation_name)
+            SQL.confirm_the_confirmation(confirmation_name, self.user_name)
             self.ui.informationTable.setRowCount(0)
             self.get_confirm_information()
+            QMessageBox.information(
+                self.ui,
+                '操作成功',
+                '成功接受该请求')
+        else:
+            QMessageBox.information(
+                self.ui,
+                '操作取消',
+                '您取消了接受操作')
+
     def reject_the_confirmation(self):
         #拒绝当前选中行的请求，会弹出选项框确定，会根据是否删除成功而返回不同的值
         current_row = self.ui.informationTable.currentRow()
-        choice = QMessageBox.question(
+        reject_reason, okPressed = QInputDialog.getText(
             self.ui,
-            '确认拒绝',
-            '确认要拒绝该请求吗?'
-        )
-        if choice == QMessageBox.Yes:
+            "拒绝请求",
+            "请输入拒绝原因:",
+            QLineEdit.Normal,
+            "")
+        if okPressed:
             confirmation_name = self.ui.informationTable.item(current_row, 0).text()
-            # TODO:根据操作编号进行拒绝等相关操作，并视删除成功与否进行不同输出
-            SQL.reject_the_confirmation(confirmation_name)
+            # TODO:根据操作编号进行拒绝等相关操作,并将拒绝原因写入备注项
+            SQL.reject_the_confirmation(confirmation_name, self.user_name, reject_reason)
             self.ui.informationTable.setRowCount(0)
             self.get_confirm_information()
+            QMessageBox.information(
+                self.ui,
+                '操作成功',
+                '成功拒绝该请求')
+        else:
+            QMessageBox.information(
+                self.ui,
+                '操作取消',
+                '您取消了拒绝操作')
 
     def get_confirm_information(self):
         confirm_information = SQL.get_confirm_information()
