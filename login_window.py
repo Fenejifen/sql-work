@@ -141,8 +141,6 @@ class StudentMainWindow:
     def get_personal_data(self):
         # 得到个人信息，显示在学生操作界面右上角
         information = SQL.get_students_personal_data(self.user_name, True)
-        # TODO:删除调试代码
-        print(information)
         self.ui.Name.setText(information[0])
         self.ui.Gender.setText(information[1])
         self.ui.Age.setText(str(information[2]))
@@ -176,7 +174,6 @@ class AdminMainWindow:
         self.get_personal_data()
 
         # 绑定操作按钮
-        # TODO:绑定管理员相关操作
         self.ui.bookManagement.clicked.connect(self.jump_to_bookManagement)
         self.ui.studentManagement.clicked.connect(self.jump_to_studentManagement)
         self.ui.confirmationManagement.clicked.connect(self.jump_to_confirmationManagement)
@@ -206,8 +203,6 @@ class AdminMainWindow:
     def get_personal_data(self):
         # 得到个人信息，显示在学生操作界面右上角
         information = SQL.get_students_personal_data(self.user_name, False)
-        # TODO:删除调试代码
-        print(information)
         self.ui.Name.setText(information[0])
         self.ui.Gender.setText(information[1])
         self.ui.Age.setText(str(information[2]))
@@ -243,14 +238,15 @@ class QueryAndBorrowWindow:
         # 按下借阅框后借阅当前选中行的书籍,并视是否借阅成功而执行各种操作
         current_row = self.ui.informationTable.currentRow()
         isbn = self.ui.informationTable.item(current_row, 0).text()
+        # SQL.borrow_the_book(isbn, self.user_name):
         # TODO: 根据ISBN与user_name进行借阅相关操作
         print(isbn)
 
     def search_book_by_name(self):
-        # TODO:加入模糊搜索
         # 按下搜索按钮后获得信息并输出至信息框
         book_name = self.ui.searchEdit.text()
         book_information = SQL.search_book_by_name(book_name)
+        self.ui.informationTable.setRowCount(0)
         self.ui.searchInformationLabel.setText(f"共搜索到了{len(book_information)}个结果")
         self.ui.informationTable.clearContents()
         for i, row_information in enumerate(book_information):

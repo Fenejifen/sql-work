@@ -36,8 +36,6 @@ class SQL:
         for account_information in account_information_tuple:
             account_information_dict.setdefault(account_information[0], account_information[1])
 
-        # TODO:删除调试代码
-        print(account_information_dict)
         if user_name in account_information_dict and pass_word == account_information_dict[user_name]:
             print("登录成功")
             return True
@@ -60,7 +58,7 @@ class SQL:
     @classmethod
     def search_book_by_name(cls, book_name):
         # TODO:加入借阅信息中关于最近应还书籍日期的信息
-        cls.cursor.execute(f"select * from 学生查询书籍信息 where 书名 = '{book_name}' ")
+        cls.cursor.execute(f"select * from 学生查询书籍信息 where 书名 like '%{book_name}%' ")
         return cls.cursor.fetchall()
 
     @classmethod
