@@ -238,9 +238,14 @@ class QueryAndBorrowWindow:
         # 按下借阅框后借阅当前选中行的书籍,并视是否借阅成功而执行各种操作
         current_row = self.ui.informationTable.currentRow()
         isbn = self.ui.informationTable.item(current_row, 0).text()
-        # SQL.borrow_the_book(isbn, self.user_name):
-        # TODO: 根据ISBN与user_name进行借阅相关操作
-        print(isbn)
+        exit_code = SQL.borrow_the_book(isbn, self.user_name)
+        if exit_code == 0:
+            QMessageBox.about(self.ui, '操作成功', '书籍已预订请寻找管理员进行确定操作')
+            print("借阅成功")
+        elif exit_code == 1:
+            QMessageBox.critical(self.ui, '操作失败', '书籍被借阅光了')
+        elif exit_code == 2:
+            QMessageBox.critical(self.ui, '操作失败', '您当前借阅书籍数量已达上限')
 
     def search_book_by_name(self):
         # 按下搜索按钮后获得信息并输出至信息框

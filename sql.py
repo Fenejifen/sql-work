@@ -1,3 +1,5 @@
+import time
+
 import pymysql
 
 
@@ -57,7 +59,6 @@ class SQL:
 
     @classmethod
     def search_book_by_name(cls, book_name):
-        # TODO:加入借阅信息中关于最近应还书籍日期的信息
         cls.cursor.execute(f"select * from 学生查询书籍信息 where 书名 like '%{book_name}%' ")
         return cls.cursor.fetchall()
 
@@ -111,3 +112,22 @@ class SQL:
     def reject_the_confirmation(cls, confirmation_name):
         # TODO:根据confirmation_name进行相关拒绝操作，并返回True或False
         pass
+
+    @classmethod
+    def borrow_the_book(cls, isbn, user_name):
+        # 让学号为user_name的学生预订借阅当前ISBN的书籍，返回码0表示借阅成功，1表示没有图书，2表示超出借阅上限
+        # 判断是否有剩余图书
+        cls.cursor.execute(f"select 可借书籍数 from 书籍 where ISBN = {isbn} ")
+        if cls.cursor.fetchall()[0][0] == 0:
+            return 1
+        # 判断是否达到借阅上限
+        cls.cursor.execute(f"select 剩余可借阅书籍数 from 学生 where 学工号 = {user_name}")
+        if cls.cursor.fetchall()[0][0] == 0:
+            return 2
+        # 进行操作申请操作，包括书籍-1，可借阅书籍-1，操作申请表中增加数据内容
+        cls.cursor.execute(f"update 书籍 set 可借书籍数 = 可借书籍数 - 1 where ISBN = {isbn}")
+        cls.cursor.execute(f"update 学生 set 剩余可借阅书籍数 = 剩余可借阅书籍数 - 1 where 学工号 = {user_name}")
+        cls.cursor.execute(f"insert into 操作申请 (学号,工号,ISBN, 申请日期, 操作类型, 确认与否) values ({user_name}, NULL, "
+                           f"{isbn},'{time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))}', '借阅', 0)")
+        cls.db.commit()
+        return 0
