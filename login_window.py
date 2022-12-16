@@ -229,11 +229,12 @@ class QueryAndBorrowWindow:
         self.user_name = user_name
 
         # 设置搜索框图标
-        self.ui.searchButton.setIcon(QIcon('./image/search.jpeg'))
+        self.ui.searchButton.setIcon(QIcon('ui/search.jpeg'))
         # 绑定操作按钮
         self.ui.searchButton.clicked.connect(self.search_book_by_name)
         self.ui.borrowButton.clicked.connect(self.borrow_the_book)
         self.ui.backButton.clicked.connect(self.jump_to_back)
+        self.search_book_by_name()
 
     def borrow_the_book(self):
         # 按下借阅框后借阅当前选中行的书籍,并视是否借阅成功而执行各种操作
@@ -254,7 +255,6 @@ class QueryAndBorrowWindow:
 
     def search_book_by_name(self):
         # 按下搜索按钮后获得信息并输出至信息框
-        # TODO: 加入根据作者等方法进行模糊搜索
         book_name = self.ui.searchEdit.text()
         book_information = SQL.search_book_by_name(book_name)
         self.ui.informationTable.setRowCount(0)
@@ -477,7 +477,7 @@ class StudentManagement:
                 QMessageBox.information(
                     self.ui,
                     '操作成功',
-                    '成功修改')
+                    '成功删除学生信息')
             if exit_code == 1:
                 QMessageBox.critical(self.ui, '操作失败', '出现异常错误')
             if exit_code == 2:
