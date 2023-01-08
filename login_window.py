@@ -1,6 +1,7 @@
 """
 存储所有关于登录窗口相关的类
 """
+
 from PySide2.QtGui import QImage, QPixmap, QIcon
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QMessageBox, QGraphicsScene, QGraphicsPixmapItem, QTableWidgetItem, QInputDialog, \
@@ -234,7 +235,26 @@ class QueryAndBorrowWindow:
         self.ui.searchButton.clicked.connect(self.search_book_by_name)
         self.ui.borrowButton.clicked.connect(self.borrow_the_book)
         self.ui.backButton.clicked.connect(self.jump_to_back)
+        self.ui.advancedSearchButton.clicked.connect(self.show_advanced_search)
         self.search_book_by_name()
+        # 设置隐藏高级搜索选项
+        self.hide_advanced_search()
+
+    def show_advanced_search(self):
+        # 显示各项目
+        self.ui.widget.show()
+        # 再次按下隐藏
+        self.ui.advancedSearchButton.clicked.connect(self.hide_advanced_search)
+        # 绑定搜索按钮为高级搜索
+        self.ui.searchButton.clicked.connect(self.search_book_by_senior)
+
+    def hide_advanced_search(self):
+        # 隐藏各项目
+        self.ui.widget.hide()
+        # 再次按下展开
+        self.ui.advancedSearchButton.clicked.connect(self.show_advanced_search)
+        # 绑定搜索按钮为普通搜索
+        self.ui.searchButton.clicked.connect(self.search_book_by_name)
 
     def borrow_the_book(self):
         # 按下借阅框后借阅当前选中行的书籍,并视是否借阅成功而执行各种操作
@@ -253,9 +273,27 @@ class QueryAndBorrowWindow:
         elif exit_code == 4:
             QMessageBox.critical(self.ui, '操作失败', '您已申请了借阅当前书籍')
 
+    def search_book_by_senior(self):
+        # 按下搜索按钮后获取全部信息并搜索输出至信息框
+        book_name = self.ui.bookNameEdit.text()
+        book_isbn = self.ui.ISBNEdit.text()
+        book_author = self.ui.authorEdit.text()
+        book_press = self.ui.pressEdit.text()
+        book_type = self.ui.typeBox.currentText()
+        book_remainder = self.ui.remainderButton.isChecked()
+        book_information = SQL.search_book_by_senior(book_name,book_isbn,book_author,book_press,book_type,book_remainder)
+        self.ui.informationTable.setRowCount(0)
+        self.ui.searchInformationLabel.setText(f"共搜索到了{len(book_information)}个结果")
+        self.ui.informationTable.clearContents()
+        for i, row_information in enumerate(book_information):
+            self.ui.informationTable.insertRow(i)
+            for j, col_information in enumerate(row_information):
+                item = QTableWidgetItem(str(col_information))
+                self.ui.informationTable.setItem(i, j, item)
+
     def search_book_by_name(self):
         # 按下搜索按钮后获得信息并输出至信息框
-        book_name = self.ui.searchEdit.text()
+        book_name = self.ui.bookNameEdit.text()
         book_information = SQL.search_book_by_name(book_name)
         self.ui.informationTable.setRowCount(0)
         self.ui.searchInformationLabel.setText(f"共搜索到了{len(book_information)}个结果")
@@ -336,6 +374,7 @@ class BookManagement:
     """
     管理员进行图书管理的界面
     """
+    # TODO: 加入图书搜索页面
 
     def __init__(self, user_name):
         self.ui = QUiLoader().load('./ui/bookManagement.ui')
@@ -421,6 +460,8 @@ class StudentManagement:
     管理员进行学生管理的界面
     """
 
+    # TODO: 加入学生搜索页面
+
     def __init__(self, user_name):
         self.ui = QUiLoader().load('./ui/studentManagement.ui')
         self.user_name = user_name;
@@ -501,6 +542,7 @@ class StudentManagement:
         self.ui.close()
 
 class ConfirmationManagement:
+    # TODO: 加入待确认事项搜索框
     def __init__(self, user_name):
         self.ui = QUiLoader().load('./ui/confirmationManagement.ui')
         self.user_name = user_name;

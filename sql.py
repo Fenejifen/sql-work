@@ -63,6 +63,15 @@ class SQL:
         return cls.cursor.fetchall()
 
     @classmethod
+    def search_book_by_senior(cls, book_name, book_isbn, book_author, book_press, book_type, book_remainder):
+        if book_remainder:
+            cls.cursor.execute(f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 类型 = '{book_type}' and 可借书籍数 > 0")
+        else:
+            cls.cursor.execute(
+            f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 类型 = '{book_type}'")
+        return cls.cursor.fetchall()
+
+    @classmethod
     def get_borrow_information(cls, user_name):
         cls.cursor.execute(
             f"select ISBN,书名,作者,借阅时间,应还时间,续借次数 from 学生借阅未归还书籍信息 where 学号 = '{user_name}'")
@@ -348,3 +357,4 @@ class SQL:
         cls.db.commit()
 
         return 0
+
