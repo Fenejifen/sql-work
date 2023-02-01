@@ -58,17 +58,20 @@ class SQL:
         return cls.cursor.fetchone()
 
     @classmethod
-    def search_book_by_name(cls, book_name):
-        cls.cursor.execute(f"select * from 学生查询书籍信息 where 书名 like '%{book_name}%' ")
-        return cls.cursor.fetchall()
-
-    @classmethod
-    def search_book_by_senior(cls, book_name, book_isbn, book_author, book_press, book_type, book_remainder):
-        if book_remainder:
-            cls.cursor.execute(f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 类型 = '{book_type}' and 可借书籍数 > 0")
+    def search_book(cls, book_name, book_isbn, book_author, book_press, book_type, book_remainder):
+        if book_type == "":
+            if book_remainder:
+                cls.cursor.execute(f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 可借书籍数 > 0")
+            else:
+                cls.cursor.execute(
+                f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%'")
         else:
-            cls.cursor.execute(
-            f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 类型 = '{book_type}'")
+            if book_remainder:
+                cls.cursor.execute(
+                    f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 类型 = '{book_type}' and 可借书籍数 > 0")
+            else:
+                cls.cursor.execute(
+                    f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 类型 = '{book_type}'")
         return cls.cursor.fetchall()
 
     @classmethod
@@ -358,3 +361,22 @@ class SQL:
 
         return 0
 
+    @classmethod
+    def search_student(cls, student_name, student_user_name, student_class, student_major, student_sex):
+        cls.cursor.execute(f"select * from 学生 where 姓名 like '%{student_name}%' and 学工号 like '%{student_user_name}%' and 班级 like '%{student_class}%' and 专业 like '%{student_major}%' and 性别 like '%{student_sex}%'")
+        return cls.cursor.fetchall()
+
+    @classmethod
+    def get_book_types(cls):
+        cls.cursor.execute("select distinct 类型 from 书籍")
+        return cls.cursor.fetchall()
+
+    @classmethod
+    def get_class_types(cls):
+        cls.cursor.execute("select distinct 班级 from 学生")
+        return cls.cursor.fetchall()
+
+    @classmethod
+    def get_major_types(cls):
+        cls.cursor.execute("select distinct 专业 from 学生")
+        return cls.cursor.fetchall()

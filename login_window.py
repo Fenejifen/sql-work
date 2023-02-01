@@ -229,32 +229,41 @@ class QueryAndBorrowWindow:
         self.ui = QUiLoader().load('./ui/queryAndBorrow.ui')
         self.user_name = user_name
 
+        # 获取界面相关信息
+        self.search_book()
+
         # 设置搜索框图标
         self.ui.searchButton.setIcon(QIcon('ui/search.jpeg'))
+
         # 绑定操作按钮
-        self.ui.searchButton.clicked.connect(self.search_book_by_name)
+        self.ui.searchButton.clicked.connect(self.search_book)
         self.ui.borrowButton.clicked.connect(self.borrow_the_book)
         self.ui.backButton.clicked.connect(self.jump_to_back)
         self.ui.advancedSearchButton.clicked.connect(self.show_advanced_search)
-        self.search_book_by_name()
+
         # 设置隐藏高级搜索选项
         self.hide_advanced_search()
 
     def show_advanced_search(self):
         # 显示各项目
         self.ui.widget.show()
+
+        # 搜索并添加书籍类型
+        self.ui.typeBox.clear()
+        self.ui.typeBox.addItem('')
+        book_types = SQL.get_book_types()
+        for book_type in book_types:
+            self.ui.typeBox.addItem(book_type[0])
+
         # 再次按下隐藏
         self.ui.advancedSearchButton.clicked.connect(self.hide_advanced_search)
-        # 绑定搜索按钮为高级搜索
-        self.ui.searchButton.clicked.connect(self.search_book_by_senior)
 
     def hide_advanced_search(self):
         # 隐藏各项目
         self.ui.widget.hide()
-        # 再次按下展开
+        self.ui.typeBox.clear()
+        # 再次按下显示
         self.ui.advancedSearchButton.clicked.connect(self.show_advanced_search)
-        # 绑定搜索按钮为普通搜索
-        self.ui.searchButton.clicked.connect(self.search_book_by_name)
 
     def borrow_the_book(self):
         # 按下借阅框后借阅当前选中行的书籍,并视是否借阅成功而执行各种操作
@@ -272,8 +281,11 @@ class QueryAndBorrowWindow:
             QMessageBox.critical(self.ui, '操作失败', '您已经借阅了当前书籍')
         elif exit_code == 4:
             QMessageBox.critical(self.ui, '操作失败', '您已申请了借阅当前书籍')
+        # 刷新界面
+        self.ui.informationTable.setRowCount(0)
+        self.search_book()
 
-    def search_book_by_senior(self):
+    def search_book(self):
         # 按下搜索按钮后获取全部信息并搜索输出至信息框
         book_name = self.ui.bookNameEdit.text()
         book_isbn = self.ui.ISBNEdit.text()
@@ -281,20 +293,9 @@ class QueryAndBorrowWindow:
         book_press = self.ui.pressEdit.text()
         book_type = self.ui.typeBox.currentText()
         book_remainder = self.ui.remainderButton.isChecked()
-        book_information = SQL.search_book_by_senior(book_name,book_isbn,book_author,book_press,book_type,book_remainder)
-        self.ui.informationTable.setRowCount(0)
-        self.ui.searchInformationLabel.setText(f"共搜索到了{len(book_information)}个结果")
-        self.ui.informationTable.clearContents()
-        for i, row_information in enumerate(book_information):
-            self.ui.informationTable.insertRow(i)
-            for j, col_information in enumerate(row_information):
-                item = QTableWidgetItem(str(col_information))
-                self.ui.informationTable.setItem(i, j, item)
-
-    def search_book_by_name(self):
-        # 按下搜索按钮后获得信息并输出至信息框
-        book_name = self.ui.bookNameEdit.text()
-        book_information = SQL.search_book_by_name(book_name)
+        book_information = SQL.search_book(book_name,book_isbn,book_author,book_press,book_type,book_remainder)
+        # 测试代码
+        print("搜索的图书信息:",book_name, book_isbn, book_author, book_press, book_type, book_remainder)
         self.ui.informationTable.setRowCount(0)
         self.ui.searchInformationLabel.setText(f"共搜索到了{len(book_information)}个结果")
         self.ui.informationTable.clearContents()
@@ -374,19 +375,67 @@ class BookManagement:
     """
     管理员进行图书管理的界面
     """
-    # TODO: 加入图书搜索页面
 
     def __init__(self, user_name):
         self.ui = QUiLoader().load('./ui/bookManagement.ui')
-        self.user_name = user_name;
+        self.user_name = user_name
+
         # 获取界面相关信息
-        self.get_book_information()
+        self.search_book()
+
+        # 设置搜索框图标
+        self.ui.searchButton.setIcon(QIcon('ui/search.jpeg'))
 
         # 绑定操作按钮
+        self.ui.searchButton.clicked.connect(self.search_book)
         self.ui.addBookButton.clicked.connect(self.add_book)
         self.ui.deleteBookButton.clicked.connect(self.delete_the_book)
         self.ui.submitButton.clicked.connect(self.submit_the_book)
         self.ui.backButton.clicked.connect(self.jump_to_back)
+        self.ui.advancedSearchButton.clicked.connect(self.show_advanced_search)
+
+        # 设置隐藏高级搜索选项
+        self.hide_advanced_search()
+
+    def show_advanced_search(self):
+        # 显示各项目
+        self.ui.widget.show()
+
+        # 搜索并添加书籍类型
+        self.ui.typeBox.clear()
+        self.ui.typeBox.addItem('')
+        book_types = SQL.get_book_types()
+        for book_type in book_types:
+            self.ui.typeBox.addItem(book_type[0])
+
+        # 再次按下隐藏
+        self.ui.advancedSearchButton.clicked.connect(self.hide_advanced_search)
+
+    def hide_advanced_search(self):
+        # 隐藏各项目
+        self.ui.widget.hide()
+        self.ui.typeBox.clear()
+        # 再次按下显示
+        self.ui.advancedSearchButton.clicked.connect(self.show_advanced_search)
+    def search_book(self):
+        # 按下搜索按钮后获取全部信息并搜索输出至信息框
+        book_name = self.ui.bookNameEdit.text()
+        book_isbn = self.ui.ISBNEdit.text()
+        book_author = self.ui.authorEdit.text()
+        book_press = self.ui.pressEdit.text()
+        book_type = self.ui.typeBox.currentText()
+        book_remainder = self.ui.remainderButton.isChecked()
+        book_information = SQL.search_book(book_name,book_isbn,book_author,book_press,book_type,book_remainder)
+        # 测试代码
+        print("搜索的图书信息:",book_name, book_isbn, book_author, book_press, book_type, book_remainder)
+        self.ui.informationTable.setRowCount(0)
+        self.ui.searchInformationLabel.setText(f"共搜索到了{len(book_information)}个结果")
+        self.ui.informationTable.clearContents()
+        for i, row_information in enumerate(book_information):
+            self.ui.informationTable.insertRow(i)
+            for j, col_information in enumerate(row_information):
+                item = QTableWidgetItem(str(col_information))
+                self.ui.informationTable.setItem(i, j, item)
 
     def submit_the_book(self):
         current_row = self.ui.informationTable.currentRow()
@@ -405,14 +454,14 @@ class BookManagement:
                 '操作成功',
                 '成功修改')
             self.ui.informationTable.setRowCount(0)
-            self.get_book_information()
+            self.search_book()
         if exit_code == 1:
             QMessageBox.critical(self.ui, '操作失败', '出现异常错误')
 
 
     def add_book(self):
         self.ui.informationTable.setRowCount(0)
-        self.get_book_information()
+        self.search_book()
         row_count = self.ui.informationTable.rowCount()
         self.ui.informationTable.insertRow(row_count)
 
@@ -427,7 +476,7 @@ class BookManagement:
         if choice == QMessageBox.Yes:
             exit_code = SQL.delete_the_book(current_row)
             self.ui.informationTable.setRowCount(0)
-            self.get_book_information()
+            self.search_book()
             if exit_code == 0:
                 QMessageBox.information(
                     self.ui,
@@ -439,15 +488,9 @@ class BookManagement:
                 QMessageBox.critical(self.ui, '操作失败', '本书仍有请求未处理')
             if exit_code == 3:
                 QMessageBox.critical(self.ui, '操作失败', '本书未被归还')
-
-    def get_book_information(self):
-        book_information = SQL.get_book_information()
-        self.ui.bookInformationLabel.setText(f"当前共有{len(book_information)}本书籍")
-        for i, row_information in enumerate(book_information):
-            self.ui.informationTable.insertRow(i)
-            for j, col_information in enumerate(row_information):
-                item = QTableWidgetItem(str(col_information))
-                self.ui.informationTable.setItem(i, j, item)
+        # 刷新界面
+        self.ui.informationTable.setRowCount(0)
+        self.search_book()
 
     def jump_to_back(self):
         # 跳转到上一层
@@ -460,19 +503,55 @@ class StudentManagement:
     管理员进行学生管理的界面
     """
 
-    # TODO: 加入学生搜索页面
-
     def __init__(self, user_name):
         self.ui = QUiLoader().load('./ui/studentManagement.ui')
-        self.user_name = user_name;
+        self.user_name = user_name
+
         # 获取界面相关信息
-        self.get_student_information()
+        self.search_student()
+
+        # 设置搜索框图标
+        self.ui.searchButton.setIcon(QIcon('ui/search.jpeg'))
 
         # 绑定操作按钮
+        self.ui.searchButton.clicked.connect(self.search_student)
         self.ui.addStudentButton.clicked.connect(self.add_student)
         self.ui.deleteStudentButton.clicked.connect(self.delete_the_student)
         self.ui.submitButton.clicked.connect(self.submit_the_student)
         self.ui.backButton.clicked.connect(self.jump_to_back)
+        self.ui.advancedSearchButton.clicked.connect(self.show_advanced_search)
+
+        # 设置隐藏高级搜索选项
+        self.hide_advanced_search()
+
+    def show_advanced_search(self):
+        # 显示各项目
+        self.ui.widget.show()
+
+        # 搜索并添加班级类型
+        self.ui.classBox.clear()
+        self.ui.classBox.addItem('')
+        class_types = SQL.get_class_types()
+        for class_type in class_types:
+            self.ui.classBox.addItem(class_type[0])
+
+        # 搜索并添加专业类型
+        self.ui.majorBox.clear()
+        self.ui.majorBox.addItem('')
+        major_types = SQL.get_major_types()
+        for major_type in major_types:
+            self.ui.majorBox.addItem(major_type[0])
+
+        # 再次按下隐藏
+        self.ui.advancedSearchButton.clicked.connect(self.hide_advanced_search)
+
+    def hide_advanced_search(self):
+        # 隐藏各项目
+        self.ui.widget.hide()
+        self.ui.classBox.clear()
+        self.ui.majorBox.clear()
+        # 再次按下显示
+        self.ui.advancedSearchButton.clicked.connect(self.show_advanced_search)
 
     def submit_the_student(self):
         current_row = self.ui.informationTable.currentRow()
@@ -493,10 +572,11 @@ class StudentManagement:
                 self.ui,
                 '操作成功',
                 '成功修改')
-            self.ui.informationTable.setRowCount(0)
-            self.get_student_information()
         if exit_code == 1:
             QMessageBox.critical(self.ui, '操作失败', '出现异常错误')
+        # 刷新界面
+        self.ui.informationTable.setRowCount(0)
+        self.search_student()
 
     def add_student(self):
         row_count = self.ui.informationTable.rowCount()
@@ -512,8 +592,6 @@ class StudentManagement:
         )
         if choice == QMessageBox.Yes:
             exit_code = SQL.delete_the_student(current_row)
-            self.ui.informationTable.setRowCount(0)
-            self.get_student_information()
             if exit_code == 0:
                 QMessageBox.information(
                     self.ui,
@@ -525,10 +603,23 @@ class StudentManagement:
                 QMessageBox.critical(self.ui, '操作失败', '该学生仍有请求未处理')
             if exit_code == 3:
                 QMessageBox.critical(self.ui, '操作失败', '该学生有书未被归还')
+        # 刷新界面
+        self.ui.informationTable.setRowCount(0)
+        self.search_student()
 
-    def get_student_information(self):
-        student_information = SQL.get_student_information()
-        self.ui.studentInformationLabel.setText(f"当前共有{len(student_information)}位学生")
+    def search_student(self):
+        # 按下搜索按钮后获取全部信息并搜索输出至信息框
+        student_name = self.ui.studentNameEdit.text()
+        student_user_name = self.ui.userNameEdit.text()
+        student_class = self.ui.classBox.currentText()
+        student_major = self.ui.majorBox.currentText()
+        student_sex = self.ui.sexBox.currentText()
+        student_information = SQL.search_student(student_name,student_user_name,student_class,student_major,student_sex)
+        # 测试代码
+        print("搜索的学生信息:",student_name, student_user_name, student_class, student_major, student_sex)
+        self.ui.informationTable.setRowCount(0)
+        self.ui.searchInformationLabel.setText(f"共搜索到了{len(student_information)}个结果")
+        self.ui.informationTable.clearContents()
         for i, row_information in enumerate(student_information):
             self.ui.informationTable.insertRow(i)
             for j, col_information in enumerate(row_information):

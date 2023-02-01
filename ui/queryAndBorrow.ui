@@ -42,7 +42,7 @@
            <item>
             <widget class="QPushButton" name="advancedSearchButton">
              <property name="text">
-              <string>展开高级搜索</string>
+              <string>高级搜索</string>
              </property>
             </widget>
            </item>
@@ -158,23 +158,7 @@
                        <widget class="QLineEdit" name="pressEdit"/>
                       </item>
                       <item>
-                       <widget class="QComboBox" name="typeBox">
-                        <item>
-                         <property name="text">
-                          <string/>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>教育</string>
-                         </property>
-                        </item>
-                        <item>
-                         <property name="text">
-                          <string>科技</string>
-                         </property>
-                        </item>
-                       </widget>
+                       <widget class="QComboBox" name="typeBox"/>
                       </item>
                      </layout>
                     </item>

@@ -6,140 +6,343 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>841</width>
-    <height>591</height>
+    <width>1082</width>
+    <height>722</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>学生管理</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_4">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_3">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>学生姓名:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="studentNameEdit">
+         <property name="placeholderText">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="advancedSearchButton">
+         <property name="text">
+          <string>高级搜索</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="searchButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>32</horstretch>
+           <verstretch>32</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>搜索</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>搜索</string>
+         </property>
+         <property name="flat">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QWidget" name="widget" native="true">
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_6">
+                  <item>
+                   <widget class="QLabel" name="label_1">
+                    <property name="text">
+                     <string>学号</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_3">
+                    <property name="text">
+                     <string>班级</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label">
+                    <property name="text">
+                     <string>专业</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_4">
+                    <property name="text">
+                     <string>性别</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+                <item>
+                 <layout class="QVBoxLayout" name="verticalLayout_7">
+                  <item>
+                   <widget class="QLineEdit" name="userNameEdit"/>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="classBox">
+                    <item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>男</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>女</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="majorBox">
+                    <item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>男</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>女</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QComboBox" name="sexBox">
+                    <item>
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>男</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>女</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                 </layout>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_4">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QTableWidget" name="informationTable">
+         <property name="editTriggers">
+          <set>QAbstractItemView::DoubleClicked</set>
+         </property>
+         <column>
+          <property name="text">
+           <string>学工号</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>姓名</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>年龄</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>班级</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>专业</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>性别</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>联系方式</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>账户密码</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>剩余可借阅书籍数</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <item>
-            <widget class="QTableWidget" name="informationTable">
-             <property name="editTriggers">
-              <set>QAbstractItemView::DoubleClicked</set>
-             </property>
-             <column>
-              <property name="text">
-               <string>学工号</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>姓名</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>年龄</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>班级</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>专业</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>性别</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>联系方式</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>账户密码</string>
-              </property>
-             </column>
-             <column>
-              <property name="text">
-               <string>剩余可借阅书籍数</string>
-              </property>
-             </column>
-            </widget>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout">
-             <item>
-              <widget class="QPushButton" name="addStudentButton">
-               <property name="text">
-                <string>增加</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="deleteStudentButton">
-               <property name="text">
-                <string>删除</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="submitButton">
-               <property name="text">
-                <string>提交修改</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="Line" name="line_2">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+          <widget class="QPushButton" name="addStudentButton">
+           <property name="text">
+            <string>增加</string>
            </property>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <widget class="QLabel" name="studentInformationLabel">
-             <property name="text">
-              <string>当前共有N个书籍</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="backButton">
-             <property name="text">
-              <string>返回</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QPushButton" name="deleteStudentButton">
+           <property name="text">
+            <string>删除</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="submitButton">
+           <property name="text">
+            <string>提交修改</string>
+           </property>
+          </widget>
          </item>
         </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLabel" name="searchInformationLabel">
+         <property name="text">
+          <string>当前共有N个书籍</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="backButton">
+         <property name="text">
+          <string>返回</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
