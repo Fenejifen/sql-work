@@ -16,7 +16,7 @@ class SQL:
         charset='utf8mb4'
     )  # 连接数据库
     cursor = db.cursor()
-    cursor.execute("use `sql-work`")
+    cursor.execute("use `sql-work`") # 在这里输入数据库名字
 
     @classmethod
     def check_login(cls, user_name, pass_word, is_student):
@@ -61,17 +61,17 @@ class SQL:
     def search_book(cls, book_name, book_isbn, book_author, book_press, book_type, book_remainder):
         if book_type == "":
             if book_remainder:
-                cls.cursor.execute(f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 可借书籍数 > 0")
+                cls.cursor.execute(f"select * from 书籍 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 可借书籍数 > 0")
             else:
                 cls.cursor.execute(
-                f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%'")
+                f"select * from 书籍 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%'")
         else:
             if book_remainder:
                 cls.cursor.execute(
-                    f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 类型 = '{book_type}' and 可借书籍数 > 0")
+                    f"select * from 书籍 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 类型 = '{book_type}' and 可借书籍数 > 0")
             else:
                 cls.cursor.execute(
-                    f"select * from 学生查询书籍信息 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 类型 = '{book_type}'")
+                    f"select * from 书籍 where ISBN like '%{book_isbn}%' and 书名 like '%{book_name}%' and 作者 like '%{book_author}%' and 出版社 like '%{book_press}%' and 类型 = '{book_type}'")
         return cls.cursor.fetchall()
 
     @classmethod
