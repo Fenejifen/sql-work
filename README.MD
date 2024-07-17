@@ -3,6 +3,8 @@
 
 ## 创建环境与运行程序
 
+**首先请打开`sql.py`并修改`11-17`行代码为自己的mysql用户名与密码(非常重要)**
+
 ```bash
 # 创建数据库并导入数据
 > mysql
@@ -16,8 +18,15 @@ conda activate sql-work
 pip install pymysql pyside2 # 主要是安装这两个包
 
 # 运行
-python.\main.py # 运行时请确保此时在sql-wor目录下，否则无法读取UI进而导致无法运行
+python.\main.py # 运行时请确保此时在sql-work目录下，否则无法读取UI进而导致无法运行
 ```
+
+虚拟环境的配置可以参考这篇博客：
+[三种Anaconda虚拟环境创建方式和第三方包的安装_anaconda创建一个新的环境安装第三方库之前的第三方库可以用吗-CSDN博客](https://blog.csdn.net/weixin_40964777/article/details/117700161?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522169859072016800215072519%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=169859072016800215072519&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v31_ecpm-1-117700161-null-null.nonecase&utm_term=%E6%80%8E%E4%B9%88%E5%9C%A8anaconda%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%B8%AD%E4%B8%8B%E8%BD%BD%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93&spm=1018.2226.3001.4450)
+
+用命令提示符复制mysql库可以参考以下两篇博客：
+1.[MySQL+MySQLWorkBench安装和配置_mysql和mysqlworkbench都要下载吗-CSDN博客](https://blog.csdn.net/xuiiao/article/details/129297574?ops_request_misc=&request_id=&biz_id=102&utm_term=%E6%80%8E%E4%B9%88%E4%B8%8B%E8%BD%BDmysql%E5%92%8Cmysqlworkbench&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~sobaiduweb~default-0-129297574.nonecase&spm=1018.2226.3001.4450)
+2.[ERROR 1064 (42000): You have an error in your SQL syntax; - 知乎](https://zhuanlan.zhihu.com/p/476698808)
 
 ## 操作方法
 
